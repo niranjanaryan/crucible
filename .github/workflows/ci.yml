@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - elixir: "1.18.4"
+            otp: "27.3"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+      - name: Mix
+        run: |
+          mix deps.get
+          mix format --check-formatted
+          mix test
+      - name: Hex package
+        env:
+          HEX_PUBLISH: "1"
+        run: mix hex.build
