@@ -1,0 +1,12 @@
+/_build/
+/deps/
+/doc/
+erl_crash.dump
+*.ez
+*.tar
+/crucible-*.tar
+.elixir_ls/
+/crucible
+
+/cover/
+/crucible
