@@ -6,31 +6,22 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/niranjanaryan)
 
-Multi-cloud **provisioner** for Phoenix FLAME. One behaviour; many clouds.
-**Zeiroh** is the FLAME overlay (Iroh/Zenoh). Ingot/dusk **join** nodes.
-Crucible **creates** the box.
+Standalone multi-cloud **provisioner** CLI (same shape as **orian**), plus a library for Phoenix FLAME. Crucible **creates** the box. Zeiroh joins (Iroh/Zenoh). Gale is HTTP/3.
 
-See **[DESIGN.md](DESIGN.md)** for the survey of Fly/K8s/EC2/Gigalixir,
-libcluster, and Apache Libcloud — and why this is a new package.
-
-```elixir
-{:crucible, "~> 0.1"}
-{:flame, "~> 0.5"}
-
-{FLAME.Pool,
- backend: {Crucible.FLAME.Backend, driver: :local}}  # :docker | :fly | :k8s | ...
 ```
-
-`Crucible.providers/0` lists **100+** clouds. Almost every VM name is
-JSON REST (`boot` issues real HTTP). Named codecs: Hetzner, DO, Vultr,
-Linode, Civo, Scaleway. Wraps: Fly/K8s/EC2. PaaS/storage stay
-`{:not_implemented, name}`.
-
-## CLI (same idea as Orian)
+gale     — Phoenix HTTP/3
+orian    — parallel S3/S5 transfer CLI
+crucible — boot/rm VMs across clouds (this)
+ingot    — Iroh + Zenoh cluster
+dusk     — Zenoh-first cluster
+zeiroh   — Phoenix FLAME overlay
+```
 
 ```bash
 # from this repo
-mix crucible.install          # ~/.local/bin/crucible
+mix crucible.install
+# Linux/macOS: ~/.local/bin    Windows: %LOCALAPPDATA%\elixcoder\bin
+# needs escript (Erlang/OTP) on PATH
 
 crucible ls --implemented
 crucible boot --driver dummy --name n1
@@ -40,7 +31,7 @@ crucible http
 crucible version
 ```
 
-Inside a Mix project that depends on Crucible: `mix crucible boot --driver dummy` (same CLI).
+Needs Erlang/OTP on PATH (escript). Not Mix. Host apps can still `mix crucible …` or `{:crucible, "~> 0.1"}`.
 
 ```elixir
 {:ok, s} = Crucible.init(driver: :hetzner, token: System.fetch_env!("HCLOUD_TOKEN"),

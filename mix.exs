@@ -17,7 +17,12 @@ defmodule Crucible.MixProject do
       source_url: @source_url,
       homepage_url: "https://hex.pm/packages/crucible",
       name: "Crucible",
-      escript: [main_module: Crucible.CLI, name: "crucible"],
+      escript: [
+        main_module: Crucible.CLI,
+        name: "crucible",
+        embed_elixir: true,
+        comment: "crucible standalone CLI"
+      ],
       aliases: ["crucible.cli": ["compile", "escript.build"]]
     ]
   end
@@ -32,17 +37,7 @@ defmodule Crucible.MixProject do
       {:jason, "~> 1.4"},
       {:flame, "~> 0.5", optional: true},
       {:ex_doc, "~> 0.38", only: :dev, runtime: false}
-    ] ++ sibling(:gale)
-  end
-
-  defp sibling(name) do
-    path = Path.expand("../#{name}", __DIR__)
-
-    if System.get_env("HEX_PUBLISH") != "1" and File.dir?(path) do
-      [{name, path: path, optional: true}]
-    else
-      []
-    end
+    ]
   end
 
   defp description do

@@ -22,7 +22,10 @@ defmodule Crucible.CLI do
   Env: HCLOUD_TOKEN DIGITALOCEAN_TOKEN VULTR_API_KEY LINODE_TOKEN
        AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION FLY_API_TOKEN
 
-  Install: mix crucible.install   (escript → ~/.local/bin/crucible)
+  Install: mix crucible.install
+    Linux/macOS: ~/.local/bin
+    Windows:     %LOCALAPPDATA%\\elixcoder\\bin
+    Override:    ELIXCODER_BIN
   """
 
   @switches [

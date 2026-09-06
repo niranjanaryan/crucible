@@ -68,6 +68,10 @@ defmodule CrucibleTest do
     assert m.driver == :ecs
   end
 
+  test "CLI install paths" do
+    assert is_binary(Crucible.CLI.Paths.bin_dir())
+  end
+
   test "CLI help and version" do
     assert :ok = Crucible.CLI.main(["--help"], halt: false)
     assert :ok = Crucible.CLI.main(["version"], halt: false)
