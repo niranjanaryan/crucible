@@ -8,7 +8,7 @@
 - 100+ provider catalog (`Crucible.providers/0`); REST codecs: DigitalOcean, Vultr, Linode, Civo, Scaleway
 - Data-driven `Crucible.Driver.REST.Json` — most VM names `boot` via HTTP templates
 - AWS Signature V4 (`Crucible.Auth.SigV4`) for ECS/EKS/Lightsail/Fargate REST
-- CLI: `mix crucible` / escript (`providers`, `boot`, `shutdown`, `describe`, `sizes`); `mix crucible.install` → `~/.local/bin/crucible`
+- Standalone CLI: `mix crucible.install` → `~/.local/bin/crucible`
 - FOSS: MIT, CoC, CONTRIBUTING, SECURITY, FUNDING, Dependabot, CI
 - Catalog driver returns `{:error, {:not_implemented, name}}` instead of pretending
 - `Crucible.CloudInit` env → user_data

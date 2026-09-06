@@ -18,19 +18,19 @@ defmodule Crucible.MixProject do
       homepage_url: "https://hex.pm/packages/crucible",
       name: "Crucible",
       escript: [main_module: Crucible.CLI, name: "crucible"],
-      aliases: ["crucible.cli": ["escript.build"]]
+      aliases: ["crucible.cli": ["compile", "escript.build"]]
     ]
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger, :crypto, :inets, :ssl, :public_key]]
   end
 
   defp deps do
     [
-      {:req, "~> 0.5", optional: true},
+      {:req, "~> 0.5"},
+      {:jason, "~> 1.4"},
       {:flame, "~> 0.5", optional: true},
-      {:jason, "~> 1.4", optional: true},
       {:ex_doc, "~> 0.38", only: :dev, runtime: false}
     ] ++ sibling(:gale)
   end

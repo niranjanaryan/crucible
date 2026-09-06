@@ -26,21 +26,21 @@ JSON REST (`boot` issues real HTTP). Named codecs: Hetzner, DO, Vultr,
 Linode, Civo, Scaleway. Wraps: Fly/K8s/EC2. PaaS/storage stay
 `{:not_implemented, name}`.
 
-## CLI
+## CLI (same idea as Orian)
 
 ```bash
+# from this repo
 mix crucible.install          # ~/.local/bin/crucible
 
-crucible providers --implemented
+crucible ls --implemented
 crucible boot --driver dummy --name n1
 crucible sizes --driver dummy
+crucible rm --driver dummy --id dummy-1
 crucible http
-crucible boot --driver hetzner --token "$HCLOUD_TOKEN" --size cpx21 --region nbg1
-crucible shutdown --driver hetzner --id 99
 crucible version
 ```
 
-Inside a Mix project: `mix crucible providers` or `mix crucible.boot --driver dummy`.
+Inside a Mix project that depends on Crucible: `mix crucible boot --driver dummy` (same CLI).
 
 ```elixir
 {:ok, s} = Crucible.init(driver: :hetzner, token: System.fetch_env!("HCLOUD_TOKEN"),
