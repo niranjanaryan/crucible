@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Production allowlist (`--production`), HTTP 429/5xx retries, secret-file mode warning
+- `.env` / YAML config; `PRODUCTION.md`
+
 ## 0.1.0
 
 - Libcloud-shaped `Crucible.Driver` (Dummy, Local, Docker, wrap Fly/K8s/EC2)
@@ -8,7 +13,7 @@
 - 100+ provider catalog (`Crucible.providers/0`); REST codecs: DigitalOcean, Vultr, Linode, Civo, Scaleway
 - Data-driven `Crucible.Driver.REST.Json` — most VM names `boot` via HTTP templates
 - AWS Signature V4 (`Crucible.Auth.SigV4`) for ECS/EKS/Lightsail/Fargate REST
-- Standalone CLI: `mix crucible.install` (Linux/macOS/Windows)
+- Standalone CLI: `mix crucible.binary` Burrito single file; else escript
 - FOSS: MIT, CoC, CONTRIBUTING, SECURITY, FUNDING, Dependabot, CI
 - Catalog driver returns `{:error, {:not_implemented, name}}` instead of pretending
 - `Crucible.CloudInit` env → user_data

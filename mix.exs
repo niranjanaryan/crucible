@@ -23,12 +23,39 @@ defmodule Crucible.MixProject do
         embed_elixir: true,
         comment: "crucible standalone CLI"
       ],
+      releases: releases(),
       aliases: ["crucible.cli": ["compile", "escript.build"]]
     ]
   end
 
   def application do
-    [extra_applications: [:logger, :crypto, :inets, :ssl, :public_key]]
+    [
+      extra_applications: [:logger, :crypto, :inets, :ssl, :public_key],
+      mod: {Crucible.Application, []}
+    ]
+  end
+
+  def wrap(%Mix.Release{} = release) do
+    if Code.ensure_loaded?(Burrito), do: Burrito.wrap(release), else: release
+  end
+
+  defp releases do
+    [
+      crucible: [
+        steps: [:assemble, &__MODULE__.wrap/1],
+        burrito: [targets: burrito_targets()]
+      ]
+    ]
+  end
+
+  defp burrito_targets do
+    [
+      macos: [os: :darwin, cpu: :x86_64, skip_nifs: true],
+      macos_silicon: [os: :darwin, cpu: :aarch64, skip_nifs: true],
+      linux: [os: :linux, cpu: :x86_64, skip_nifs: true],
+      linux_aarch64: [os: :linux, cpu: :aarch64, skip_nifs: true],
+      windows: [os: :windows, cpu: :x86_64, skip_nifs: true]
+    ]
   end
 
   defp deps do
@@ -36,12 +63,13 @@ defmodule Crucible.MixProject do
       {:req, "~> 0.5"},
       {:jason, "~> 1.4"},
       {:flame, "~> 0.5", optional: true},
-      {:ex_doc, "~> 0.38", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.38", only: :dev, runtime: false},
+      {:burrito, "~> 1.6", optional: true, runtime: false}
     ]
   end
 
   defp description do
-    "Multi-cloud FLAME provisioner (Libcloud-shaped). Iroh/Zenoh join; Crucible boots."
+    "Multi-cloud provisioner CLI and Phoenix FLAME backend. Boot and remove VMs across AWS, Hetzner, DigitalOcean, Vultr, Linode, Civo, Scaleway, and more from Elixir."
   end
 
   defp docs do
@@ -57,7 +85,8 @@ defmodule Crucible.MixProject do
         "LICENSE",
         "FUNDING.md",
         "CONTRIBUTING.md",
-        "SECURITY.md"
+        "SECURITY.md",
+        "PRODUCTION.md"
       ]
     ]
   end
@@ -67,6 +96,21 @@ defmodule Crucible.MixProject do
       name: "crucible",
       maintainers: ["Niranjan Aryan"],
       licenses: ["MIT"],
+      keywords: [
+        "cloud",
+        "provisioner",
+        "flame",
+        "phoenix",
+        "hetzner",
+        "aws",
+        "gcp",
+        "azure",
+        "cli",
+        "libcloud",
+        "iroh",
+        "zenoh",
+        "devops"
+      ],
       links: %{
         "GitHub" => @source_url,
         "Changelog" => "#{@source_url}/blob/main/CHANGELOG.md",

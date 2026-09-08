@@ -8,6 +8,7 @@ defmodule Crucible.Driver.REST.Codec do
   def get(:civo), do: {:ok, __MODULE__.Civo}
   def get(:scaleway), do: {:ok, __MODULE__.Scaleway}
   def get(:json), do: {:ok, Crucible.Driver.REST.Json}
+  def get(:gce), do: {:ok, Crucible.Driver.REST.Codec.GCE}
   def get(other), do: {:error, {:rest_codec_missing, other}}
 
   defmodule DigitalOcean do

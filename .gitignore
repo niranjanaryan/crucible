@@ -7,6 +7,11 @@ erl_crash.dump
 /crucible-*.tar
 .elixir_ls/
 /crucible
-
+/burrito_out/
 /cover/
-/crucible
+.env
+.env.local
+crucible.yaml
+crucible.yml
+.crucible.yaml
+crucible.json

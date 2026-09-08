@@ -29,6 +29,16 @@ defmodule Crucible.Auth do
             extra_headers
         end
 
+      :gcp ->
+        token =
+          state.token ||
+            case Crucible.Auth.GCP.access_token(state.opts) do
+              {:ok, t} -> t
+              _ -> "test"
+            end
+
+        Crucible.HTTP.json_headers(token) ++ extra_headers
+
       _ ->
         Crucible.HTTP.json_headers(state.token || "test") ++ extra_headers
     end
@@ -43,6 +53,11 @@ defmodule Crucible.Auth do
 
   def ready?(%{meta: %{auth: :sigv4}} = state) do
     match?({:ok, _, _, _}, SigV4.credentials(state.opts)) or is_function(state.http, 3)
+  end
+
+  def ready?(%{meta: %{auth: :gcp}} = state) do
+    is_function(state.http, 3) or match?({:ok, _}, Crucible.Auth.GCP.access_token(state.opts)) or
+      (is_binary(state.token) and state.token != "")
   end
 
   def ready?(%{http: f}) when is_function(f, 3), do: true

@@ -15,7 +15,7 @@ defmodule Crucible.Driver.REST do
      %{
        provider: name,
        meta: meta,
-       token: Keyword.get(opts, :token) || token_from_env(meta),
+       token: Keyword.get(opts, :token) || token_from_env(meta, opts),
        http: Keyword.get(opts, :http),
        opts: opts
      }}
@@ -130,8 +130,15 @@ defmodule Crucible.Driver.REST do
     base <> path
   end
 
-  defp token_from_env(%{token_env: env}) when is_binary(env), do: System.get_env(env)
-  defp token_from_env(_), do: nil
+  defp token_from_env(%{auth: :gcp}, opts) do
+    case Crucible.Auth.GCP.access_token(opts) do
+      {:ok, t} -> t
+      _ -> nil
+    end
+  end
+
+  defp token_from_env(%{token_env: env}, _opts) when is_binary(env), do: System.get_env(env)
+  defp token_from_env(_, _), do: nil
 
   defp need_token(state) do
     if Crucible.Auth.ready?(state), do: :ok, else: {:error, {:token_required, state.provider}}

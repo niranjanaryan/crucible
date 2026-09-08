@@ -85,6 +85,60 @@ defmodule CrucibleTest do
     assert :ok = Crucible.CLI.main(["boot", "--driver", "dummy", "--name", "cli1"], halt: false)
   end
 
+  test "parses yaml and dotenv credentials" do
+    yaml = """
+    driver: dummy
+    name: from-yaml
+    region: nbg1
+    hetzner:
+      token: hcloud-from-file
+      region: fsn1
+    env:
+      FLAME_PARENT: parent-1
+    """
+
+    assert %{"driver" => "dummy", "hetzner" => %{"token" => "hcloud-from-file"}} =
+             Crucible.Config.parse_simple_yaml(yaml)
+
+    dir = Path.join(System.tmp_dir!(), "crucible-cfg-#{System.unique_integer([:positive])}")
+    File.mkdir_p!(dir)
+    ypath = Path.join(dir, "crucible.yaml")
+    epath = Path.join(dir, ".env")
+    File.write!(ypath, yaml)
+    File.write!(epath, "HCLOUD_TOKEN=from-dotenv\nALREADY=keep\n")
+    System.put_env("ALREADY", "original")
+    System.delete_env("HCLOUD_TOKEN")
+
+    Crucible.Config.load_dotenv(epath)
+    assert System.get_env("HCLOUD_TOKEN") == "from-dotenv"
+    assert System.get_env("ALREADY") == "original"
+
+    merged =
+      Crucible.Config.merge(Crucible.Config.load_config_file(ypath),
+        driver: "hetzner",
+        token: nil
+      )
+
+    assert merged[:driver] == :hetzner
+    assert merged[:token] == "hcloud-from-file"
+    assert merged[:region] == "fsn1"
+    assert merged[:env]["FLAME_PARENT"] == "parent-1"
+  after
+    System.delete_env("HCLOUD_TOKEN")
+  end
+
+  test "production allowlist" do
+    assert Crucible.Providers.production_ready?(:hetzner)
+    assert Crucible.Providers.production_ready?(:digitalocean)
+    refute Crucible.Providers.production_ready?(:proxmox)
+    refute Crucible.Providers.production_ready?(:render)
+  end
+
+  test "CLI --production blocks experimental drivers" do
+    assert {:error, {:not_production_ready, :proxmox}} =
+             Crucible.CLI.main(["boot", "--driver", "proxmox", "--production"], halt: false)
+  end
+
   test "CLI missing driver errors" do
     assert {:error, :driver_required} = Crucible.CLI.main(["boot"], halt: false)
   end

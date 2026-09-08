@@ -8,8 +8,8 @@ defmodule Crucible.CLI do
   @help """
   crucible #{@version} — multi-cloud provisioner (Libcloud-shaped)
 
-    crucible ls | providers [--implemented] [--kind KIND] [--json]
-    crucible boot      --driver NAME [--name N] [--image I] [--size S] [--region R] [--token T] [--env K=V] [--json]
+    crucible ls | providers [--implemented] [--production] [--kind KIND] [--json]
+    crucible boot      --driver NAME [--token T | --access-key AK --secret-key SK] [--region R] [--name N] [--image I] [--size S] [--env K=V] [--json]
     crucible describe  --driver NAME --id ID [--json]
     crucible rm | shutdown --driver NAME --id ID
     crucible sizes     --driver NAME [--json]
@@ -18,6 +18,9 @@ defmodule Crucible.CLI do
 
   Drivers: dummy, local, docker, hetzner, digitalocean, vultr, linode, fly, k8s, …
   KIND: rest | wrap | builtin | catalog
+
+  Config: crucible.yaml | crucible.json | .env   (cwd or ~/.config/crucible/)
+          --config PATH --env-file PATH
 
   Env: HCLOUD_TOKEN DIGITALOCEAN_TOKEN VULTR_API_KEY LINODE_TOKEN
        AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION FLY_API_TOKEN
@@ -35,11 +38,17 @@ defmodule Crucible.CLI do
     size: :string,
     region: :string,
     token: :string,
+    access_key: :string,
+    secret_key: :string,
     id: :string,
     env: :keep,
     json: :boolean,
     implemented: :boolean,
     kind: :string,
+    config: :string,
+    env_file: :string,
+    production: :boolean,
+    force: :boolean,
     help: :boolean,
     version: :boolean
   ]
@@ -99,9 +108,10 @@ defmodule Crucible.CLI do
         meta = Crucible.Providers.get(name) || %{}
         {name, meta[:kind] || :catalog, Crucible.Providers.implemented?(name)}
       end)
-      |> Enum.filter(fn {_n, kind, impl} ->
+      |> Enum.filter(fn {name, kind, impl} ->
         (is_nil(kind_filter) or to_string(kind) == kind_filter) and
-          (not Keyword.get(opts, :implemented, false) or impl)
+          (not Keyword.get(opts, :implemented, false) or impl) and
+          (not Keyword.get(opts, :production, false) or Crucible.Providers.production_ready?(name))
       end)
 
     if opts[:json] do
@@ -122,8 +132,10 @@ defmodule Crucible.CLI do
 
   defp cmd_boot(args) do
     {opts, _, _} = OptionParser.parse(args, strict: @switches, aliases: @aliases)
+    opts = Crucible.Config.load(opts)
 
     with {:ok, driver} <- fetch_driver(opts),
+         :ok <- production_guard(driver, opts),
          {:ok, state} <- Crucible.init(init_opts(driver, opts)),
          {:ok, machine, state} <- Crucible.boot(state, boot_spec(opts)),
          {:ok, machine, _} <- maybe_await(state, machine) do
@@ -134,6 +146,7 @@ defmodule Crucible.CLI do
 
   defp cmd_shutdown(args) do
     {opts, _, _} = OptionParser.parse(args, strict: @switches, aliases: @aliases)
+    opts = Crucible.Config.load(opts)
 
     with {:ok, driver} <- fetch_driver(opts),
          {:ok, id} <- fetch_id(opts),
@@ -147,6 +160,7 @@ defmodule Crucible.CLI do
 
   defp cmd_describe(args) do
     {opts, _, _} = OptionParser.parse(args, strict: @switches, aliases: @aliases)
+    opts = Crucible.Config.load(opts)
 
     with {:ok, driver} <- fetch_driver(opts),
          {:ok, id} <- fetch_id(opts),
@@ -166,6 +180,7 @@ defmodule Crucible.CLI do
 
   defp cmd_sizes(args) do
     {opts, _, _} = OptionParser.parse(args, strict: @switches, aliases: @aliases)
+    opts = Crucible.Config.load(opts)
 
     with {:ok, driver} <- fetch_driver(opts),
          {:ok, state} <- Crucible.init(init_opts(driver, opts)) do
@@ -180,10 +195,28 @@ defmodule Crucible.CLI do
     end
   end
 
+  defp production_guard(driver, opts) do
+    cond do
+      Keyword.get(opts, :force, false) ->
+        :ok
+
+      Keyword.get(opts, :production, false) and not Crucible.Providers.production_ready?(driver) ->
+        {:error, {:not_production_ready, driver}}
+
+      not Crucible.Providers.production_ready?(driver) and not Keyword.get(opts, :force, false) ->
+        err("driver #{driver} is experimental; use --production to block non-allowlisted drivers")
+        :ok
+
+      true ->
+        :ok
+    end
+  end
+
   defp fetch_driver(opts) do
     case opts[:driver] do
       nil -> {:error, :driver_required}
-      name -> {:ok, String.to_atom(name)}
+      name when is_atom(name) -> {:ok, name}
+      name when is_binary(name) -> {:ok, String.to_atom(name)}
     end
   end
 
@@ -196,16 +229,24 @@ defmodule Crucible.CLI do
 
   defp init_opts(driver, opts) do
     [driver: driver, token: opts[:token]]
-    |> Keyword.merge(image: opts[:image], size: opts[:size], region: opts[:region])
+    |> Keyword.merge(
+      image: opts[:image],
+      size: opts[:size],
+      region: opts[:region],
+      access_key: opts[:access_key],
+      secret_key: opts[:secret_key]
+    )
     |> Enum.reject(fn {_k, v} -> is_nil(v) end)
   end
 
   defp boot_spec(opts) do
-    env =
+    from_flags =
       opts
       |> Keyword.get_values(:env)
       |> Enum.map(&split_env/1)
       |> Map.new()
+
+    env = Map.merge(opts[:env] || %{}, from_flags)
 
     %{
       name: opts[:name],
@@ -286,6 +327,10 @@ defmodule Crucible.CLI do
 
   defp format_error(:driver_required), do: "missing --driver"
   defp format_error(:id_required), do: "missing --id"
+
+  defp format_error({:not_production_ready, d}),
+    do: "#{d} is not on the production allowlist (see PRODUCTION.md); use --force to override"
+
   defp format_error(:unknown_command), do: "unknown command"
   defp format_error(other), do: inspect(other)
 end

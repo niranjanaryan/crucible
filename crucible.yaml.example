@@ -1,0 +1,13 @@
+# Copy to crucible.yaml (gitignored) and chmod 600.
+# Prefer tokens in .env, not in this file.
+
+driver: hetzner
+region: nbg1
+size: cpx11
+image: ubuntu-24.04
+
+# hetzner:
+#   token: "do-not-commit"
+
+env:
+  FLAME_PARENT: ""

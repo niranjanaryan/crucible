@@ -25,6 +25,39 @@ defmodule Crucible.Providers do
     end
   end
 
+  @production_ready MapSet.new([
+                      :dummy,
+                      :local,
+                      :docker,
+                      :nerdctl,
+                      :hetzner,
+                      :hetzner_cloud,
+                      :digitalocean,
+                      :vultr,
+                      :linode,
+                      :akamai,
+                      :civo,
+                      :scaleway,
+                      :scaleway_elastic,
+                      :fly,
+                      :k8s,
+                      :kubernetes,
+                      :ec2,
+                      :aws
+                    ])
+
+  def production_ready?(name) when is_atom(name) do
+    resolved =
+      case Map.get(all(), name) do
+        %{alias: t} -> t
+        _ -> name
+      end
+
+    MapSet.member?(@production_ready, name) or MapSet.member?(@production_ready, resolved)
+  end
+
+  def production_ready?(_), do: false
+
   defp rest(base, env, opts \\ []) do
     Map.merge(
       %{

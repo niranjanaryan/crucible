@@ -7,6 +7,15 @@ defmodule Crucible.CLI.Paths do
     System.get_env("ELIXCODER_BIN") || System.get_env("CRUCIBLE_BIN") || default_bin()
   end
 
+  def install_bin(src, name) when is_binary(src) and is_binary(name) do
+    dest_dir = bin_dir()
+    File.mkdir_p!(dest_dir)
+    dest = Path.join(dest_dir, if(windows?(), do: name <> ".exe", else: name))
+    File.cp!(src, dest)
+    unless windows?(), do: File.chmod!(dest, 0o755)
+    dest
+  end
+
   def install_escript(name) when is_binary(name) do
     dest_dir = bin_dir()
     File.mkdir_p!(dest_dir)

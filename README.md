@@ -18,10 +18,13 @@ zeiroh   — Phoenix FLAME overlay
 ```
 
 ```bash
-# from this repo
+# from this repo (preferred — Burrito binary bundles ERTS)
 mix crucible.install
+
+# or build the escript fallback (requires Erlang/OTP on PATH)
+mix escript.build
+
 # Linux/macOS: ~/.local/bin    Windows: %LOCALAPPDATA%\elixcoder\bin
-# needs escript (Erlang/OTP) on PATH
 
 crucible ls --implemented
 crucible boot --driver dummy --name n1
@@ -31,7 +34,29 @@ crucible http
 crucible version
 ```
 
-Needs Erlang/OTP on PATH (escript). Not Mix. Host apps can still `mix crucible …` or `{:crucible, "~> 0.1"}`.
+As a library dependency (`{:crucible, "~> 0.1"}`), the CLI install task is not inherited — clone the repo or use the published escript for the standalone binary.
+
+Credentials from **env**, **`.env`**, or **`crucible.yaml`** (flags override):
+
+```yaml
+# crucible.yaml
+driver: hetzner
+region: nbg1
+size: cpx21
+# token: "…"   or HCLOUD_TOKEN in .env
+hetzner:
+  token: "…"
+```
+
+```
+# .env  (does not override vars already in the shell)
+HCLOUD_TOKEN=…
+AWS_ACCESS_KEY_ID=…
+```
+
+`--config path` / `--env-file path` if the files are not in cwd. Also `~/.config/crucible/config.yaml`.
+
+Host apps can still `mix crucible …` or `{:crucible, "~> 0.1"}`.
 
 ```elixir
 {:ok, s} = Crucible.init(driver: :hetzner, token: System.fetch_env!("HCLOUD_TOKEN"),
@@ -41,4 +66,13 @@ Needs Erlang/OTP on PATH (escript). Not Mix. Host apps can still `mix crucible �
 :ok = Crucible.shutdown(s, m)
 ```
 
+## FUNDING
+
+If Crucible is useful to your project, consider sponsoring the project to support ongoing development.
+
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/niranjanaryan)
+[![Sponsor](https://img.shields.io/badge/sponsor-Patreon-F96854.svg)](https://patreon.com/niranjanaryan)
+[![Sponsor](https://img.shields.io/badge/sponsor-Ko--fi-FF5E5B.svg)](https://ko-fi.com/niranjanaryan)
+
 MIT.
+
