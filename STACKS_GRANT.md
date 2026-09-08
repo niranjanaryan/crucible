@@ -40,34 +40,47 @@ Crucible adds a `:stacks` driver that supports:
 2. **API / RPC nodes** — boot a Stacks API node with chain data sync, peer discovery, and health-check endpoints.
 3. **sBTC relay infrastructure** — boot relay containers/VMs pre-configured for Bitcoin and Stacks connectivity.
 
-The driver uses the same `Crucible.Driver` behaviour as all other clouds:
+The driver uses the same `Crucible.Driver` behaviour as all other clouds. From the user's perspective, Stacks is a first-class target:
 
 ```elixir
-{:ok, state} = Crucible.init(driver: :stacks, provider: :hetzner, region: :nbg1)
+# Provision a Stacks signer on Hetzner
+{:ok, state} = Crucible.init(driver: :hetzner, token: System.fetch_env!("HCLOUD_TOKEN"))
 {:ok, machine, state} = Crucible.boot(state, %{
-  kind: :signer,
+  kind: :stacks_signer,
   image: "ubuntu-24.04",
   size: "cpx21",
+  region: "nbg1",
   env: %{
-    "STACKS_PRIVATE_KEY" => "...",
-    "STACKS_POX_V1" => "..."
+    "STACKS_PRIVATE_KEY" => System.fetch_env!("STACKS_PRIVATE_KEY"),
+    "STACKS_POX_V1" => "true"
   }
 })
 {:ok, machine, state} = Crucible.await(state, machine)
 :ok = Crucible.shutdown(state, machine)
 ```
 
+Under the hood, Crucible:
+1. Provisions a VM on the chosen cloud via existing REST APIs
+2. Injects Stacks-specific cloud-init (installs `stacks-node`, writes `stacks-node.toml`, sets PoX-5 config)
+3. Waits for SSH + health endpoint to be ready
+4. Returns machine metadata (IP, SSH command, status)
+
 CLI parity:
 
 ```bash
-crucible boot --driver stacks --kind signer --region nbg1
-crucible sizes --driver stacks
-crucible rm --driver stacks --id stacks-signer-1
+crucible boot --driver hetzner --kind stacks_signer --region nbg1 --image ubuntu-24.04 --size cpx21
+crucible sizes --driver hetzner
+crucible rm --driver hetzner --id stacks-signer-abc123
 ```
+
+**Why not Terraform or Ansible?**
+- **Terraform** requires state files, minutes to converge, and is not idiomatic for runtime provisioning. Crucible boots in seconds.
+- **Ansible** is one-off and hard to version. Crucible provides a standard lifecycle (`boot` → `await` → `shutdown`) with cloud-init for immutable first-boot config.
+- **Single-cloud CLIs** lock you into one provider. Crucible supports 7+ clouds with the same command shape.
 
 **Design choices:**
 - Cloud-init / user-data for first-boot configuration (no SSH post-configuration required).
-- Driver is optional: `{:crucible, "~> 0.1"}` pulls only the core; `{:crucible, "~> 0.1", extras: [:stacks]}` pulls the Stacks driver.
+- Optional driver extra: `{:crucible, "~> 0.1", extras: [:stacks]}` pulls only the Stacks templates; core stays lean.
 - No Mix runtime dependency for the standalone CLI.
 - Works with existing Elixir, Rust, and Python Stacks tooling via standard REST and SSH.
 
