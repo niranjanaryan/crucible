@@ -63,8 +63,10 @@ defmodule Crucible.MixProject do
       {:req, "~> 0.5"},
       {:jason, "~> 1.4"},
       {:flame, "~> 0.5", optional: true},
-      {:ex_doc, "~> 0.38", only: :dev, runtime: false},
-      {:burrito, "~> 1.6", optional: true, runtime: false}
+      {:burrito, "~> 1.6", optional: true, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.38", only: :dev, runtime: false}
     ]
   end
 

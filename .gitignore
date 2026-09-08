@@ -15,3 +15,10 @@ crucible.yaml
 crucible.yml
 .crucible.yaml
 crucible.json
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+._*
+*.beam

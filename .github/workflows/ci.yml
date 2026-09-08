@@ -23,6 +23,8 @@ jobs:
       - run: mix format --check-formatted
       - run: mix test
       - run: mix docs
+      - run: mix credo --strict || true
+      - run: mix dialyzer || true
       - run: mix escript.build
       - run: ./crucible version
       - run: mix hex.build

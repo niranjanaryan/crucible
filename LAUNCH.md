@@ -29,18 +29,18 @@ Key hooks:
 ### Phase 1 — Pre-launch (this week)
 
 - [x] Add FUNDING section to README.
-- [ ] Polish hex.pm metadata (`mix.exs`: description, keywords, links).
+- [x] Polish hex.pm metadata (`mix.exs`: description, keywords, links).
 - [ ] Write a reproducible demo GIF/screencast for the forum post.
-- [ ] Prepare a 12–16 sentence announcement draft for Elixir Forum.
+- [x] Prepare a 12–16 sentence announcement draft for Elixir Forum.
 
 ### Phase 2 — Forum Announcement
 
-Post title: **"Crucible: boot VMs across AWS/Hetzner/GCP/Azure from Elixir (Phoenix FLAME ready)"**
+Post title: **"Crucible: boot VMs across AWS/Hetzner/DigitalOcean/Vultr/Linode from Elixir (Phoenix FLAME ready)"**
 
 Body outline:
 1. What it is and why it exists.
 2. One-liner install: `mix crucible.install`.
-3. Demo snippet showing `crucible boot`, `await`, `shutdown`.
+3. Demo snippet showing `crucible boot`, `rm`, `http`.
 4. Burrito single-binary note.
 5. Funding / sponsorship ask.
 6. Link to hex.pm, GitHub, hexdocs.

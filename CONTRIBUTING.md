@@ -8,6 +8,8 @@ Elixir **1.17+**, OTP **27+**. No Zig NIF.
 mix deps.get
 mix test
 mix docs
+mix credo --strict
+mix dialyzer
 mix crucible.install
 ```
 
@@ -20,3 +22,4 @@ mix crucible.install
 ## Hex
 
 Path deps are omitted when `HEX_PUBLISH=1`. See `PUBLISH.md`.
+
