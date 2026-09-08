@@ -107,7 +107,7 @@ crucible rm --driver hetzner --id stacks-signer-abc123
 
 ## 5. Milestones
 
-### Milestone 1: Stacks Driver Core (Weeks 1–3, $2,500 STX)
+### Milestone 1: Stacks Driver Core (Weeks 1–4, $1,500 STX)
 
 **Deliverable:** Working `:stacks` driver with signer-node support.
 
@@ -119,7 +119,7 @@ crucible rm --driver hetzner --id stacks-signer-abc123
 
 **Verification:** Published Hex package `{:crucible_stacks, "~> 0.1"}` with docs and a working demo.
 
-### Milestone 2: API Node + Health Monitoring (Weeks 4–7, $2,500 STX)
+### Milestone 2: API Node + Health Monitoring (Weeks 5–8, $2,250 STX)
 
 **Deliverable:** API node support with health checks and multi-cloud expansion.
 
@@ -131,7 +131,7 @@ crucible rm --driver hetzner --id stacks-signer-abc123
 
 **Verification:** Published v0.2.0 with docs and a screencast showing signer + API node deployment across two clouds.
 
-### Milestone 3: sBTC Relay Support + Production Hardening (Weeks 8–10, $2,500 STX)
+### Milestone 3: sBTC Relay Support + Production Hardening (Weeks 9–10, $3,750 STX)
 
 **Deliverable:** sBTC relay node templates and production-ready packaging.
 
@@ -155,7 +155,7 @@ crucible rm --driver hetzner --id stacks-signer-abc123
 | Buffer | 250 | Contingency |
 | **Total** | **7,500** | Mid-range of Getting Started Grant |
 
-**Disbursement:** 50% at Milestone 1 (Week 3), 50% at Milestone 3 (Week 10).
+**Disbursement:** 20% at Milestone 1 (Week 4), 30% at Milestone 2 (Week 8), 50% at Milestone 3 (Week 10).
 
 ---
 
