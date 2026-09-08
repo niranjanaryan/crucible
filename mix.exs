@@ -126,7 +126,8 @@ defmodule Crucible.MixProject do
       },
       files: ~w(
         lib mix.exs mix.lock README.md DESIGN.md LIBCLOUD.md LICENSE CHANGELOG.md
-        FUNDING.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md .formatter.exs
+        FUNDING.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md PRODUCTION.md
+        .formatter.exs
       )
     ]
   end
