@@ -2,8 +2,22 @@
 
 ## Unreleased
 
-- Production allowlist (`--production`), HTTP 429/5xx retries, secret-file mode warning
-- `.env` / YAML config; `PRODUCTION.md`
+## 0.1.1
+
+- Added FUNDING section and GitHub Sponsors/Patreon/Ko-fi badges
+- Polished hex.pm metadata: keywords, description, links
+- Created Elixir Forum post draft (`FORUM_POST.md`) and launch plan (`LAUNCH.md`)
+- Added `demo.sh` for dummy-driver screencast
+- Updated CI matrix: Elixir 1.17.3/1.18.4 × OTP 26.2/27.3
+- Added `mix format --check-formatted` and `mix docs` to CI
+- Added `credo` and `dialyxir` deps; CI runs both
+- Added GitHub issue templates (bug, feature, driver request) and PR template
+- Added `.gitattributes` for LF normalization
+- Expanded `.gitignore` with IDE/OS entries
+- Updated `SECURITY.md` with credential docs
+- Fixed `production_guard` wording in CLI
+- Removed non-existent `crucible await` CLI from forum post
+- Corrected hex.pm description to match shipped drivers
 
 ## 0.1.0
 
