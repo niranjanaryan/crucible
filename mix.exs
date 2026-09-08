@@ -119,7 +119,7 @@ defmodule Crucible.MixProject do
         "HexDocs" => "https://hexdocs.pm/crucible",
         "Sponsor" => "https://github.com/sponsors/niranjanaryan",
         "Gale" => "https://github.com/niranjanaryan/gale",
-        "Ingot" => "https://github.com/niranjanaryan/ingot",
+        "IngotCluster" => "https://github.com/niranjanaryan/ingot_cluster",
         "Dusk" => "https://github.com/niranjanaryan/dusk",
         "Zeiroh" => "https://github.com/niranjanaryan/zeiroh",
         "Orian" => "https://github.com/niranjanaryan/orian"
