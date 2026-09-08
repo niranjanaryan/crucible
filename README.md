@@ -73,6 +73,7 @@ If Crucible is useful to your project, consider sponsoring the project to suppor
 [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/niranjanaryan)
 [![Sponsor](https://img.shields.io/badge/sponsor-Patreon-F96854.svg)](https://patreon.com/niranjanaryan)
 [![Sponsor](https://img.shields.io/badge/sponsor-Ko--fi-FF5E5B.svg)](https://ko-fi.com/niranjanaryan)
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/niranjanaryan)
 
 MIT.
 

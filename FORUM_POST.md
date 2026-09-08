@@ -68,4 +68,4 @@ v1 ships with Local, Docker, Dummy, Hetzner, DigitalOcean, Vultr, Linode, Civo, 
 
 If this is useful to your project, sponsoring helps keep the drivers maintained and new clouds added.
 
-[GitHub Sponsors](https://github.com/sponsors/niranjanaryan) · [Patreon](https://patreon.com/niranjanaryan) · [Ko-fi](https://ko-fi.com/niranjanaryan)
+[GitHub Sponsors](https://github.com/sponsors/niranjanaryan) · [Patreon](https://patreon.com/niranjanaryan) · [Ko-fi](https://ko-fi.com/niranjanaryan) · [Buy Me a Coffee](https://www.buymeacoffee.com/niranjanaryan)
